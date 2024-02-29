@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node ./src/server.js",
     "dev": "cross-env DEBUG=knex:query nodemon ./src/server.js",
-    "migrate": "knex migrate:latest"
+    "migrate": "knex migrate:latest",
+    "test": "jest"
   },
   "description": "API desenvolvida no programa Explorer da Rocketseat",
   "author": "Rodrigo Gonçalves Santana",
@@ -23,6 +24,7 @@
     "sqlite3": "^5.0.8"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^2.0.16"
   }
 }
