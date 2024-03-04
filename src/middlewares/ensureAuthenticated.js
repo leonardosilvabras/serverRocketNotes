@@ -1,15 +1,15 @@
-const { verify } = require('jsonwebtoken');
-const AppError = require('../utils/AppError');
-const authConfig = require('../configs/auth');
+const { verify } = require("jsonwebtoken");
+const AppError = require("../utils/AppError");
+const authConfig = require("../configs/auth");
 
 function ensureAuthenticated(request, response, next) {
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
-    throw new AppError('JWT token não informado', 401);
+    throw new AppError("JWT Token nao informado", 401);
   }
 
-  const [, token] = authHeader.split(' ');
+  const [, token] = authHeader.split(" ");
 
   try {
     const { sub: user_id } = verify(token, authConfig.jwt.secret);
@@ -20,7 +20,7 @@ function ensureAuthenticated(request, response, next) {
 
     return next();
   } catch {
-    throw new AppError('Invalid JWT token', 401);
+    throw new AppError("JWT Token Invalido", 401);
   }
 }
 

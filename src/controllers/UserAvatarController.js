@@ -1,4 +1,5 @@
-const sqliteConnection = require("../database/sqlite");
+const knex = require("../database/knex");
+const AppError = require("../utils/AppError");
 const DiskStorage = require("../providers/DiskStorage");
 
 class UserAvatarController {
@@ -6,13 +7,12 @@ class UserAvatarController {
     const user_id = request.user.id;
     const avatarFilename = request.file.filename;
 
-    const database = await sqliteConnection();
     const diskStorage = new DiskStorage();
 
-    const user = await database.get("SELECT * FROM users WHERE id = (?)", [user_id]);
+    const user = await knex("users").where({ id: user_id }).first();
 
     if (!user) {
-      throw new AppError("Somente usuários autenticados podem mudar o avatar", 401);
+      throw new AppError("Usuario nao autenticado", 401);
     }
 
     if (user.avatar) {
@@ -22,13 +22,7 @@ class UserAvatarController {
     const filename = await diskStorage.saveFile(avatarFilename);
     user.avatar = filename;
 
-    await database.run(
-      `UPDATE users SET 
-      avatar = ?,
-      updated_at = ?
-      WHERE id = ?`,
-      [user.avatar, new Date(), user_id]
-    );
+    await knex("users").update(user).where({ id: user_id });
 
     return response.json(user);
   }
